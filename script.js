@@ -107,7 +107,7 @@ function renderMenu(data) {
     grid.innerHTML = data.map(item => `
         <div class="res-card">
             <div class="card-img-container">
-                <img src="${item.img}" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
+                <img class="interactive-img" src="${item.img}" alt="${item.name}" onclick="openImageModal('${item.img}', '${item.name.replace(/'/g, "\\'")}')" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
             </div>
             <div class="res-info" style="padding:15px; text-align:center;">
                 <h4 style="font-size:18px; margin-bottom:8px;">${item.name}</h4>
@@ -153,7 +153,7 @@ function renderHomeMenu(data) {
     grid.innerHTML = limitedData.map(item => `
         <div class="res-card">
             <div class="card-img-container">
-                <img src="${item.img}" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
+                <img class="interactive-img" src="${item.img}" alt="${item.name}" onclick="openImageModal('${item.img}', '${item.name.replace(/'/g, "\\'")}')" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
             </div>
             <div class="res-info" style="padding:15px; text-align:center;">
                 <h4 style="font-size:18px; margin-bottom:8px;">${item.name}</h4>
@@ -889,11 +889,63 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // إعادة تعيين التحويل عند مغادرة الكارت
-document.addEventListener('mouseleave', (e) => {
-    const cards = document.querySelectorAll('.res-card, .feature-box, .branch-card');
-    cards.forEach(card => {
-        card.style.transform = '';
+// Only attach mousemove tilt effects on devices that support hover (avoid touch devices)
+const supportsHover = (window.matchMedia && window.matchMedia('(hover: hover)').matches) || !('ontouchstart' in window);
+if (supportsHover) {
+    document.addEventListener('mousemove', (e) => {
+        const cards = document.querySelectorAll('.res-card, .feature-box, .branch-card');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xPercent = (x / rect.width) * 5;
+            const yPercent = (y / rect.height) * 5;
+            card.style.transform = `perspective(1000px) rotateX(${yPercent - 2.5}deg) rotateY(${xPercent - 2.5}deg)`;
+        });
     });
+
+    // Reset transform when leaving viewport
+    document.addEventListener('mouseleave', () => {
+        const cards = document.querySelectorAll('.res-card, .feature-box, .branch-card');
+        cards.forEach(card => { card.style.transform = ''; });
+    });
+}
+
+// Image modal functions (open/close) - safe guards to avoid errors
+function openImageModal(src, alt) {
+    try {
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('image-modal-img');
+        const cap = document.getElementById('image-modal-caption');
+        if (!modal || !img) return;
+        img.src = src || '';
+        img.alt = alt || '';
+        cap.textContent = alt || '';
+        modal.setAttribute('aria-hidden', 'false');
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    } catch (e) {
+        console.warn('openImageModal error', e);
+    }
+}
+
+function closeImageModal() {
+    try {
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('image-modal-img');
+        if (!modal || !img) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        img.src = '';
+        document.body.style.overflow = '';
+    } catch (e) {
+        console.warn('closeImageModal error', e);
+    }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') closeImageModal();
 });
 
 // تشغيل الموقع عند التحميل

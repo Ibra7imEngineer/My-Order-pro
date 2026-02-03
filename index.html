@@ -45,7 +45,7 @@
                     <button class="main-btn" onclick="showPage('menu')">ابدأ تصفح المنيو الآن <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
                 <div class="hero-graphic">
-                    <img src="https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg" alt="Hero Food">
+                    <img class="interactive-img" src="https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg" alt="Hero Food" onclick="openImageModal('https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg', 'Hero Food')">
                 </div>
             </div>
 
@@ -73,6 +73,9 @@
                 <h2 class="section-title">�🏪 فروعنا والعناوين</h2>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:25px; margin-top:40px;">
                     <div class="branch-card">
+                        <div class="branch-img">
+                            <img class="interactive-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIJ-sXReSok67nDDw0imkkDdSCFZPtAbFA5Q&s" alt="مطعم البيتزا الإيطالي" onclick="openImageModal('https://images.unsplash.com/photo-1600891964261-cd6b7d9f6f8f?w=1200','مطعم البيتزا الإيطالي')" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=No+Image';">
+                        </div>
                         <h3>🍕 مطعم البيتزا الإيطالي</h3>
                         <p><i class="fa fa-map-marker"></i> <strong>العنوان:</strong> شارع النيل، القاهرة</p>
                         <p><i class="fa fa-phone"></i> <strong>الهاتف:</strong> 01001234567</p>
@@ -80,6 +83,9 @@
                     </div>
 
                     <div class="branch-card">
+                        <div class="branch-img">
+                            <img class="interactive-img" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200" alt="برجر بازوكا" onclick="openImageModal('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200','برجر بازوكا')" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=No+Image';">
+                        </div>
                         <h3>🍔 برجر بازوكا</h3>
                         <p><i class="fa fa-map-marker"></i> <strong>العنوان:</strong> ميدان التحرير، وسط البلد</p>
                         <p><i class="fa fa-phone"></i> <strong>الهاتف:</strong> 01012345678</p>
@@ -87,6 +93,9 @@
                     </div>
 
                     <div class="branch-card">
+                        <div class="branch-img">
+                            <img class="interactive-img" src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=1200" alt="مطعم السوشي الياباني" onclick="openImageModal('https://images.unsplash.com/photo-1553621042-f6e147245754?w=1200','مطعم السوشي الياباني')" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=No+Image';">
+                        </div>
                         <h3>🍱 مطعم السوشي الياباني</h3>
                         <p><i class="fa fa-map-marker"></i> <strong>العنوان:</strong> الشارقة مول، التجمع الخامس</p>
                         <p><i class="fa fa-phone"></i> <strong>الهاتف:</strong> 01023456789</p>
@@ -94,6 +103,9 @@
                     </div>
 
                     <div class="branch-card">
+                        <div class="branch-img">
+                            <img class="interactive-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE7wbWL7yM23ASrpOVqlwllQO4JHH47STzwg&s" alt="دجاج ستريت" onclick="openImageModal('https://images.unsplash.com/photo-1604908177522-8f2f3b0f0a8e?w=1200','دجاج ستريت')" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=No+Image';">
+                        </div>
                         <h3>🍗 دجاج ستريت</h3>
                         <p><i class="fa fa-map-marker"></i> <strong>العنوان:</strong> شارع قصر النيل</p>
                         <p><i class="fa fa-phone"></i> <strong>الهاتف:</strong> 01034567890</p>
@@ -103,6 +115,9 @@
                    
 
                     <div class="branch-card">
+                        <div class="branch-img">
+                            <img class="interactive-img" src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=1200" alt="كافيه الفن الحديث" onclick="openImageModal('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=1200','كافيه الفن الحديث')" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=No+Image';">
+                        </div>
                         <h3>☕ كافيه الفن الحديث</h3>
                         <p><i class="fa fa-map-marker"></i> <strong>العنوان:</strong> شارع الهرم، الجيزة</p>
                         <p><i class="fa fa-phone"></i> <strong>الهاتف:</strong> 01056789012</p>
@@ -282,26 +297,26 @@
                 </div>
 
                 <!-- نموذج البيانات والدفع -->
-                <div class="cart-checkout" style="display:grid; grid-template-columns:1fr 350px; gap:30px; margin-top:30px;">
+                <div class="cart-checkout">
                     <!-- نموذج البيانات -->
-                    <div class="billing-info" style="background:white; padding:30px; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                    <div class="billing-info" style="background:white; padding:20px; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.12); margin-bottom:20px;">
                         <h3 style="display:flex; align-items:center; gap:10px; margin-bottom:25px; color:#FF6B35; font-size:20px; font-weight:700;">
                             <i class="fa fa-user-circle"></i> بيانات التوصيل
                         </h3>
                         
                         <div style="margin-bottom:20px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50;">👤 الاسم الكامل</label>
-                            <input type="text" id="userName" placeholder="أدخل اسمك بالكامل" style="width:100% !important;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50; font-size:15px;">👤 الاسم الكامل</label>
+                            <input type="text" id="userName" placeholder="أدخل اسمك بالكامل" style="width:100% !important; padding:12px !important; font-size:16px !important;">
                         </div>
 
                         <div style="margin-bottom:20px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50;">📍 عنوان التوصيل</label>
-                            <input type="text" id="userAddress" placeholder="شارع... حي... المدينة..." style="width:100% !important;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50; font-size:15px;">📍 عنوان التوصيل</label>
+                            <input type="text" id="userAddress" placeholder="شارع... حي... المدينة..." style="width:100% !important; padding:12px !important; font-size:16px !important;">
                         </div>
 
                         <div style="margin-bottom:20px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50;">📱 رقم الهاتف</label>
-                            <input type="tel" id="userPhone" placeholder="01xxxxxxxxx" style="width:100% !important;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; color:#2C3E50; font-size:15px;">📱 رقم الهاتف</label>
+                            <input type="tel" id="userPhone" placeholder="01xxxxxxxxx" style="width:100% !important; padding:12px !important; font-size:16px !important;">
                         </div>
 
                         <div style="background:linear-gradient(135deg, rgba(255,107,53,0.05), rgba(255,142,95,0.05)); padding:15px; border-radius:12px; border-right:3px solid #FF6B35; margin-top:25px;">
@@ -310,33 +325,33 @@
                     </div>
 
                     <!-- ملخص الطلب والدفع -->
-                    <div style="position:sticky; top:100px;">
-                        <div style="background:linear-gradient(135deg, #FF6B35, #FF8E5F); border-radius:16px; padding:30px; color:white; box-shadow:0 12px 32px rgba(255,107,53,0.3);">
+                    <div class="order-summary-box">
+                        <div style="background:linear-gradient(135deg, #FF6B35, #FF8E5F); border-radius:16px; padding:20px; color:white; box-shadow:0 12px 32px rgba(255,107,53,0.3);">
                             <h3 style="margin-bottom:25px; font-size:20px; font-weight:700; display:flex; align-items:center; gap:10px;">
                                 <i class="fa fa-receipt"></i> ملخص الطلب
                             </h3>
 
-                            <div id="orderSummary" style="margin-bottom:20px; max-height:300px; overflow-y:auto; padding-bottom:15px; border-bottom:2px solid rgba(255,255,255,0.3);">
+                            <div id="orderSummary" style="margin-bottom:20px; max-height:300px; overflow-y:auto; padding-bottom:15px; border-bottom:2px solid rgba(255,255,255,0.3); font-size:14px;">
                             </div>
 
                             <div style="margin-bottom:15px; padding-bottom:15px; border-bottom:2px solid rgba(255,255,255,0.3);">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:15px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
                                     <span>المجموع الجزئي:</span>
                                     <span id="subtotalPrice">0</span>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:15px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
                                     <span>رسوم التوصيل:</span>
                                     <span id="shippingPrice">20 ج.م</span>
                                 </div>
                             </div>
 
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; font-size:18px; font-weight:bold;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; font-size:16px; font-weight:bold;">
                                 <span>الإجمالي النهائي:</span>
-                                <span style="font-size:24px;"><span id="totalPrice">0</span> ج.م</span>
+                                <span style="font-size:22px;"><span id="totalPrice">0</span> ج.م</span>
                             </div>
 
-                            <button class="confirm-btn" onclick="finishOrder()" style="width:100%; padding:16px !important; font-size:16px !important; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px;">
-                                <i class="fa-brands fa-whatsapp" style="font-size:20px;"></i> أكمل عبر واتساب
+                            <button class="confirm-btn" onclick="finishOrder()" style="width:100%; padding:14px !important; font-size:15px !important; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px;">
+                                <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> أكمل عبر واتساب
                             </button>
 
                             <p style="font-size:12px; color:rgba(255,255,255,0.8); margin-top:15px; text-align:center; margin-bottom:0;">
@@ -398,4 +413,14 @@
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="db-seed.js"></script>
 </body>
+
+    <!-- Image modal for interactive image viewing on mobile/tablet/desktop -->
+    <div id="image-modal" class="image-modal" aria-hidden="true">
+        <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
+        <div class="image-modal-content" role="dialog" aria-modal="true">
+            <button class="image-modal-close" onclick="closeImageModal()" aria-label="إغلاق">×</button>
+            <img id="image-modal-img" src="" alt="">
+            <p id="image-modal-caption"></p>
+        </div>
+    </div>
 </html>
