@@ -1,9 +1,11 @@
 /* ==================================================
-   1. قاعدة البيانات (Menu Items Database)
-   ================================================== */
+    1. قاعدة البيانات (Menu Items Database)
+    ================================================== */
 
+(function(){
+     'use strict';
 
-// بيانات افتراضية احتياطية في حال عدم وجود بيانات في LocalStorage أو Firebase
+     // بيانات افتراضية احتياطية في حال عدم وجود بيانات في LocalStorage أو Firebase
 const defaultItems = [
   // --- قسم الأطعمة (Food) ---
   { id: 1, name: 'برجر كنج كلاسيك', price: 120, cat: 'food', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
@@ -107,12 +109,12 @@ function renderMenu(data) {
     grid.innerHTML = data.map(item => `
         <div class="res-card">
             <div class="card-img-container">
-                <img class="interactive-img" src="${item.img}" alt="${item.name}" onclick="openImageModal('${item.img}', '${item.name.replace(/'/g, "\\'")}')" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
+                <img class="interactive-img" src="${item.img}" alt="${item.name}" data-fullsrc="${item.img}" data-caption="${item.name.replace(/'/g, "\\'")}" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
             </div>
             <div class="res-info" style="padding:15px; text-align:center;">
                 <h4 style="font-size:18px; margin-bottom:8px;">${item.name}</h4>
                 <p style="color:var(--primary); font-weight:bold; font-size:17px; margin-bottom:12px;">${item.price} ج.م</p>
-                <button class="add-btn-card" onclick="addToCart(${item.id})"
+                <button class="add-btn-card" data-action="add-to-cart" data-id="${item.id}" role="button" tabindex="0" aria-label="أضف ${item.name} للسلة"
                          style="width:100%; padding:12px; font-size:16px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition: 0.3s;">
                     أضف للسلة <i class="fa fa-plus-circle"></i>
                 </button>
@@ -153,12 +155,12 @@ function renderHomeMenu(data) {
     grid.innerHTML = limitedData.map(item => `
         <div class="res-card">
             <div class="card-img-container">
-                <img class="interactive-img" src="${item.img}" alt="${item.name}" onclick="openImageModal('${item.img}', '${item.name.replace(/'/g, "\\'")}')" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
+                <img class="interactive-img" src="${item.img}" alt="${item.name}" data-fullsrc="${item.img}" data-caption="${item.name.replace(/'/g, "\\'")}" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x200?text=No+Image'; this.style.height='140px'; this.style.objectFit='cover';">
             </div>
             <div class="res-info" style="padding:15px; text-align:center;">
                 <h4 style="font-size:18px; margin-bottom:8px;">${item.name}</h4>
                 <p style="color:var(--primary); font-weight:bold; font-size:17px; margin-bottom:12px;">${item.price} ج.م</p>
-                <button class="add-btn-card" onclick="addToCart(${item.id})"
+                <button class="add-btn-card" data-action="add-to-cart" data-id="${item.id}" role="button" tabindex="0" aria-label="أضف ${item.name} للسلة"
                          style="width:100%; padding:12px; font-size:16px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition: 0.3s;">
                     أضف للسلة <i class="fa fa-plus-circle"></i>
                 </button>
@@ -226,7 +228,7 @@ function renderCartItems() {
                 <i class="fa fa-shopping-cart" style="font-size:64px; color:#BDC3C7; margin-bottom:20px;"></i>
                 <h3 style="color:#7F8C8D; margin-bottom:10px;">السلة فارغة</h3>
                 <p style="color:#BDC3C7; margin-bottom:30px;">لم تضف أي منتجات بعد</p>
-                <button onclick="showPage('menu-page')" style="background:linear-gradient(135deg, #FF6B35, #FF8E5F); color:white; border:none; padding:12px 30px; border-radius:8px; cursor:pointer; font-weight:600;">
+                <button data-action="navigate" data-target="menu-page" role="button" tabindex="0" style="background:linear-gradient(135deg, #FF6B35, #FF8E5F); color:white; border:none; padding:12px 30px; border-radius:8px; cursor:pointer; font-weight:600;">
                     <i class="fa fa-arrow-right"></i> اذهب للقائمة
                 </button>
             </div>
@@ -254,15 +256,15 @@ function renderCartItems() {
                     <h4 style="margin:0 0 8px 0; color:#2C3E50; font-size:16px; font-weight:700;">${item.name}</h4>
                     <p style="margin:0; color:#7F8C8D; font-size:14px;">${item.cat || item.category}</p>
                     <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
-                        <button onclick="decreaseQuantity(${index})" style="width:32px; height:32px; background:#F0F0F0; border:1px solid #DDD; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;">−</button>
+                        <button data-action="decrease-qty" data-index="${index}" role="button" tabindex="0" style="width:32px; height:32px; background:#F0F0F0; border:1px solid #DDD; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;">−</button>
                         <span style="width:40px; text-align:center; font-weight:700; color:#FF6B35;">${quantity}</span>
-                        <button onclick="increaseQuantity(${index})" style="width:32px; height:32px; background:#F0F0F0; border:1px solid #DDD; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;">+</button>
+                        <button data-action="increase-qty" data-index="${index}" role="button" tabindex="0" style="width:32px; height:32px; background:#F0F0F0; border:1px solid #DDD; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;">+</button>
                     </div>
                 </div>
                 <div style="text-align:right; flex-shrink:0;">
                     <p style="margin:0 0 8px 0; color:#FF6B35; font-size:16px; font-weight:700;">${itemTotal} ج.م</p>
                     <p style="margin:0; color:#7F8C8D; font-size:12px;">${item.price} ج.م × ${quantity}</p>
-                    <button onclick="removeFromCart(${index})" style="margin-top:10px; background:#FFE5DC; color:#FF6B35; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.3s;">
+                    <button data-action="remove-item" data-index="${index}" role="button" tabindex="0" style="margin-top:10px; background:#FFE5DC; color:#FF6B35; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.3s;">
                         <i class="fa fa-trash"></i> حذف
                     </button>
                 </div>
@@ -310,7 +312,7 @@ function updateCartUI() {
                 <span style="font-size:16px; font-weight:bold; display:block;">${item.name}</span>
                 <span style="font-size:14px; color:var(--primary); font-weight:bold;">${item.price} ج.م</span>
             </div>
-            <i class="fa-solid fa-trash-can" onclick="removeFromCart(${index})" style="color:#ff4d4d; font-size:20px; cursor:pointer; padding:10px;"></i>
+            <i class="fa-solid fa-trash-can" data-action="remove-item" data-index="${index}" role="button" tabindex="0" style="color:#ff4d4d; font-size:20px; cursor:pointer; padding:10px;"></i>
         </div>
     `).join('');
     
@@ -663,7 +665,10 @@ function renderAdminList() {
                 <span style="font-weight:700; display:block; color:#2C3E50; font-size:15px;">📌 ${item.name}</span>
                 <span style="font-size:13px; color:#7F8C8D; display:block; margin-top:4px;">💰 ${item.price} ج.م</span>
             </div>
-            <button onclick="deleteItem(${item.id})" style="background:linear-gradient(135deg, #E74C3C, #C0392B); color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:0.3s; box-shadow:0 2px 8px rgba(231,76,60,0.2);">🗑️ حذف</button>
+            <div style="display:flex; gap:8px;">
+                <button onclick="editItemFull(${item.id})" style="background:linear-gradient(135deg, #27AE60, #229954); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:0.3s; box-shadow:0 2px 8px rgba(39,174,96,0.2);">✏️ تعديل كامل</button>
+                <button data-action="delete-item" data-id="${item.id}" style="background:linear-gradient(135deg, #E74C3C, #C0392B); color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:0.3s; box-shadow:0 2px 8px rgba(231,76,60,0.2);">🗑️ حذف</button>
+            </div>
         </div>
     `).join('');
 }
@@ -675,6 +680,160 @@ function deleteItem(id) {
         renderAdminList();
         renderMenu(menuItems);
         showNotification('✓ تم حذف الصنف بنجاح', 'success');
+    }
+}
+
+function editItemFull(id) {
+    console.log('editItemFull called with id:', id);
+    const item = menuItems.find(i => i.id === id);
+    if (!item) {
+        console.log('Item not found');
+        return;
+    }
+
+    const editModal = document.createElement('div');
+    editModal.id = 'editItemModal';
+    editModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        direction: rtl;
+    `;
+    
+    editModal.innerHTML = `
+        <div style="background:white; padding:30px; border-radius:12px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3); direction:rtl;">
+            <h2 style="color:#2C3E50; margin-bottom:20px; font-size:20px;">✏️ تعديل المنتج</h2>
+            
+            <div style="margin-bottom:16px;">
+                <label style="display:block; color:#34495E; font-weight:600; margin-bottom:6px;">اسم المنتج:</label>
+                <input type="text" id="editItemName" value="${item.name}" style="width:100%; padding:10px; border:2px solid #ECF0F1; border-radius:6px; font-size:14px; font-family:inherit; box-sizing:border-box;" />
+            </div>
+            
+            <div style="margin-bottom:16px;">
+                <label style="display:block; color:#34495E; font-weight:600; margin-bottom:6px;">السعر:</label>
+                <input type="number" id="editItemPrice" value="${item.price}" min="1" step="0.01" style="width:100%; padding:10px; border:2px solid #ECF0F1; border-radius:6px; font-size:14px; box-sizing:border-box;" />
+            </div>
+            
+            <div style="margin-bottom:16px;">
+                <label style="display:block; color:#34495E; font-weight:600; margin-bottom:6px;">الفئة:</label>
+                <select id="editItemCategory" style="width:100%; padding:10px; border:2px solid #ECF0F1; border-radius:6px; font-size:14px; font-family:inherit; box-sizing:border-box;">
+                    <option value="food" ${item.cat === 'food' ? 'selected' : ''}>🍔 أطعمة</option>
+                    <option value="drinks" ${item.cat === 'drinks' ? 'selected' : ''}>🥤 مشروبات</option>
+                    <option value="sweets" ${item.cat === 'sweets' ? 'selected' : ''}>🍰 حلويات</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom:20px;">
+                <label style="display:block; color:#34495E; font-weight:600; margin-bottom:6px;">رابط الصورة:</label>
+                <textarea id="editItemImg" style="width:100%; padding:10px; border:2px solid #ECF0F1; border-radius:6px; font-size:12px; font-family:monospace; min-height:60px; box-sizing:border-box; resize:vertical;">${item.img}</textarea>
+            </div>
+            
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button id="cancelEditBtn" style="background:#95A5A6; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; transition:0.3s; font-size:14px;">إلغاء</button>
+                <button id="saveEditBtn" style="background:linear-gradient(135deg, #27AE60, #229954); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; transition:0.3s; font-size:14px;">حفظ التعديلات</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(editModal);
+    console.log('Modal appended to body');
+    
+    // Get buttons after they're added to the DOM
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    const saveBtn = document.getElementById('saveEditBtn');
+    
+    if (!cancelBtn || !saveBtn) {
+        console.log('Buttons not found:', {cancelBtn, saveBtn});
+        return;
+    }
+    
+    cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editModal.remove();
+    });
+    
+    cancelBtn.addEventListener('mouseover', function() { 
+        this.style.background = '#7F8C8D'; 
+    });
+    cancelBtn.addEventListener('mouseout', function() { 
+        this.style.background = '#95A5A6'; 
+    });
+    
+    saveBtn.addEventListener('mouseover', function() { 
+        this.style.background = '#1E8449'; 
+    });
+    saveBtn.addEventListener('mouseout', function() { 
+        this.style.background = '#27AE60'; 
+    });
+    
+    saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const newName = document.getElementById('editItemName').value.trim();
+        const newPrice = parseFloat(document.getElementById('editItemPrice').value);
+        const newCat = document.getElementById('editItemCategory').value;
+        const newImg = document.getElementById('editItemImg').value.trim();
+        
+        console.log('Save clicked:', {newName, newPrice, newCat, newImg});
+        
+        if (!newName) {
+            showNotification('⚠️ اسم المنتج لا يمكن أن يكون فارغاً', 'warning');
+            return;
+        }
+        if (isNaN(newPrice) || newPrice <= 0) {
+            showNotification('⚠️ السعر يجب أن يكون رقماً موجباً', 'warning');
+            return;
+        }
+        if (!newImg) {
+            showNotification('⚠️ رابط الصورة لا يمكن أن يكون فارغاً', 'warning');
+            return;
+        }
+        
+        item.name = newName;
+        item.price = newPrice;
+        item.cat = newCat;
+        item.img = newImg;
+        
+        localStorage.setItem('myMenuData', JSON.stringify(menuItems));
+        editModal.remove();
+        renderAdminList();
+        renderMenu(menuItems);
+        renderHomeMenu(menuItems);
+        showNotification('✅ تم تحديث المنتج بنجاح', 'success');
+    });
+    
+    editModal.addEventListener('click', (e) => {
+        if (e.target === editModal) editModal.remove();
+    });
+}
+
+function editItemPrice(id, currentPrice) {
+    const newPrice = prompt(`أدخل السعر الجديد (الحالي: ${currentPrice} ج.م):`);
+    if (newPrice === null) return; // cancelled
+
+    const numPrice = parseFloat(newPrice);
+    if (isNaN(numPrice) || numPrice <= 0) {
+        showNotification('⚠️ السعر يجب أن يكون رقماً موجباً', 'warning');
+        return;
+    }
+
+    const item = menuItems.find(i => i.id === id);
+    if (item) {
+        const oldPrice = item.price;
+        item.price = numPrice;
+        localStorage.setItem('myMenuData', JSON.stringify(menuItems));
+        renderAdminList();
+        renderMenu(menuItems);
+        showNotification(`✅ تم تحديث السعر من ${oldPrice} إلى ${numPrice} ج.م`, 'success');
     }
 }
 
@@ -794,6 +953,7 @@ function sendReview() {
         renderReviews();
         showNotification('✅ شكراً لتقييمك! تم حفظه بنجاح', 'success');
     } catch(e) {
+        console.error('Error saving review:', e);
         showNotification('❌ خطأ في حفظ التقييم', 'error');
     }
 }
@@ -809,6 +969,48 @@ function renderReviews() {
         </div>
     `).join('');
 }
+
+// --- Export selected functions to global scope so inline handlers continue to work ---
+try {
+    window.showPage = showPage;
+    window.renderMenu = renderMenu;
+    window.searchFunction = searchFunction;
+    window.filterItems = filterItems;
+
+    window.renderHomeMenu = renderHomeMenu;
+    window.searchHomeMenu = searchHomeMenu;
+    window.filterHomeMenu = filterHomeMenu;
+    window.initializeHomeMenu = initializeHomeMenu;
+
+    window.addToCart = addToCart;
+    window.renderCartItems = renderCartItems;
+    window.updateCartCount = updateCartCount;
+    window.updateCartUI = updateCartUI;
+    window.removeFromCart = removeFromCart;
+    window.increaseQuantity = increaseQuantity;
+    window.decreaseQuantity = decreaseQuantity;
+
+    window.finishOrder = finishOrder;
+    window.showNotification = showNotification;
+
+    window.openImageModal = openImageModal;
+    window.closeImageModal = closeImageModal;
+
+    window.addNewItemFromAdmin = addNewItemFromAdmin;
+    window.renderAdminList = renderAdminList;
+    window.deleteItem = deleteItem;
+    window.editItemPrice = editItemPrice;
+    window.updateRestaurantPhone = updateRestaurantPhone;
+    window.initializeAdminPanel = initializeAdminPanel;
+    window.seedFromAdmin = seedFromAdmin;
+    window.clearAllItems = clearAllItems;
+    window.sendReview = sendReview;
+    window.renderReviews = renderReviews;
+} catch (e) {
+    console.warn('Failed to export some functions to window:', e);
+}
+
+})();
 
 /* ==================================================
    7. تأثيرات بصرية (تأثير الثلج) وتجهيز الموقع
@@ -849,23 +1051,247 @@ function validateAdminLogin() {
         return;
     }
     
+    // التحقق من البيانات
     if (username === 'admin' && password === '12345') {
         // بيانات صحيحة
         sessionStorage.setItem('isAdmin', 'true');
         errorDiv.style.display = 'none';
-        alert('✨ أهلاً وسهلاً! تم تسجيل دخولك بنجاح 🎉');
+        showNotification('✨ أهلاً وسهلاً! تم تسجيل دخولك بنجاح 🎉', 'success');
         document.getElementById('admin-username').value = '';
         document.getElementById('admin-password').value = '';
-        showPage('admin-page');
+        setTimeout(() => showPage('admin-page'), 500);
     } else {
         // بيانات غير صحيحة
         errorDiv.textContent = '❌ بيانات الدخول غير صحيحة. تحقق من اسم المستخدم وكلمة المرور';
         errorDiv.style.display = 'block';
+        showNotification('❌ بيانات دخول خاطئة!', 'error');
     }
 }
 
 /* ==================================================
-   9. دالة تسجيل الخروج من الإدارة
+   9. نظام تسجيل دخول العميل
+   ================================================== */
+
+// Initialize customers storage
+let customers = JSON.parse(localStorage.getItem('customers')) || [];
+let currentCustomer = JSON.parse(sessionStorage.getItem('currentCustomer')) || null;
+
+function switchCustomerTab(tab) {
+    const loginForm = document.getElementById('customerLoginForm');
+    const registerForm = document.getElementById('customerRegisterForm');
+    const loginTab = document.getElementById('customerLoginTab');
+    const registerTab = document.getElementById('customerRegisterTab');
+    
+    if (tab === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        loginTab.style.color = '#FF6B35';
+        loginTab.style.borderBottomColor = '#FF6B35';
+        loginTab.style.background = 'white';
+        registerTab.style.color = '#7F8C8D';
+        registerTab.style.borderBottomColor = 'transparent';
+        registerTab.style.background = 'transparent';
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        loginTab.style.color = '#7F8C8D';
+        loginTab.style.borderBottomColor = 'transparent';
+        loginTab.style.background = 'transparent';
+        registerTab.style.color = '#FF6B35';
+        registerTab.style.borderBottomColor = '#FF6B35';
+        registerTab.style.background = 'white';
+    }
+}
+
+function customerLogin() {
+    const email = document.getElementById('customer-email').value.trim();
+    const password = document.getElementById('customer-password').value.trim();
+    const errorDiv = document.getElementById('customerLoginError');
+    
+    if (!email || !password) {
+        errorDiv.textContent = '⚠️ الرجاء ملء جميع الحقول المطلوبة';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    const customer = customers.find(c => c.email === email && c.password === password);
+    
+    if (customer) {
+        currentCustomer = {
+            id: customer.id,
+            name: customer.name,
+            email: customer.email,
+            phone: customer.phone
+        };
+        sessionStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+        errorDiv.style.display = 'none';
+        document.getElementById('customer-email').value = '';
+        document.getElementById('customer-password').value = '';
+        showNotification(`✅ أهلاً ${customer.name}! تم تسجيل دخولك بنجاح`, 'success');
+        updateUserIcon();
+        setTimeout(() => showPage('home-page'), 500);
+    } else {
+        errorDiv.textContent = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
+        errorDiv.style.display = 'block';
+    }
+}
+
+function customerRegister() {
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const phone = document.getElementById('register-phone').value.trim();
+    const password = document.getElementById('register-password').value.trim();
+    const confirmPassword = document.getElementById('register-confirm-password').value.trim();
+    const errorDiv = document.getElementById('customerRegisterError');
+    
+    if (!name || !email || !phone || !password || !confirmPassword) {
+        errorDiv.textContent = '⚠️ الرجاء ملء جميع الحقول المطلوبة';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    if (!email.includes('@')) {
+        errorDiv.textContent = '❌ البريد الإلكتروني غير صحيح';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    if (password.length < 6) {
+        errorDiv.textContent = '❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        errorDiv.textContent = '❌ كلمات المرور غير متطابقة';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    if (customers.some(c => c.email === email)) {
+        errorDiv.textContent = '❌ البريد الإلكتروني مسجل بالفعل';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    const newCustomer = {
+        id: Date.now(),
+        name,
+        email,
+        phone,
+        password,
+        createdAt: new Date().toISOString()
+    };
+    
+    customers.push(newCustomer);
+    localStorage.setItem('customers', JSON.stringify(customers));
+    
+    currentCustomer = {
+        id: newCustomer.id,
+        name: newCustomer.name,
+        email: newCustomer.email,
+        phone: newCustomer.phone
+    };
+    sessionStorage.setItem('currentCustomer', JSON.stringify(currentCustomer));
+    
+    errorDiv.style.display = 'none';
+    document.getElementById('register-name').value = '';
+    document.getElementById('register-email').value = '';
+    document.getElementById('register-phone').value = '';
+    document.getElementById('register-password').value = '';
+    document.getElementById('register-confirm-password').value = '';
+    
+    showNotification(`✅ تم إنشاء حسابك بنجاح! أهلاً ${name}`, 'success');
+    updateUserIcon();
+    setTimeout(() => showPage('home-page'), 500);
+}
+
+function customerLogout() {
+    currentCustomer = null;
+    sessionStorage.removeItem('currentCustomer');
+    showNotification('👋 تم تسجيل خروجك بنجاح', 'success');
+    updateUserIcon();
+    showPage('home-page');
+}
+
+function updateUserIcon() {
+    const userIcon = document.querySelector('.user-icon');
+    const cartIcon = document.querySelector('.cart-icon');
+    
+    if (!userIcon) return;
+    
+    if (currentCustomer) {
+        userIcon.innerHTML = `<i class="fa-solid fa-user" title="${currentCustomer.name}"></i>`;
+        userIcon.style.cursor = 'pointer';
+        userIcon.onclick = (e) => {
+            e.stopPropagation();
+            showCustomerMenu();
+        };
+    } else {
+        userIcon.innerHTML = `<i class="fa-solid fa-circle-user"></i>`;
+        userIcon.onclick = () => showPage('customer-login-page');
+    }
+}
+
+function showCustomerMenu() {
+    if (!currentCustomer) return;
+    
+    const menu = document.createElement('div');
+    menu.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        z-index: 9999;
+        min-width: 300px;
+        text-align: center;
+        direction: rtl;
+    `;
+    
+    menu.innerHTML = `
+        <h3 style="color:#2C3E50; margin-bottom:10px; font-size:18px;">👤 حسابي</h3>
+        <div style="background:#F8F9FA; padding:15px; border-radius:8px; margin-bottom:20px;">
+            <p style="margin:5px 0; font-size:14px;"><strong>الاسم:</strong> ${currentCustomer.name}</p>
+            <p style="margin:5px 0; font-size:14px;"><strong>البريد:</strong> ${currentCustomer.email}</p>
+            <p style="margin:5px 0; font-size:14px;"><strong>الهاتف:</strong> ${currentCustomer.phone}</p>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button id="closeCustomerMenuBtn" style="background:#95A5A6; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600;">إغلاق</button>
+            <button onclick="customerLogout()" style="background:#E74C3C; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600;">🚪 خروج</button>
+        </div>
+    `;
+    
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 9998;
+    `;
+    
+    document.body.appendChild(backdrop);
+    document.body.appendChild(menu);
+    
+    document.getElementById('closeCustomerMenuBtn').onclick = () => {
+        menu.remove();
+        backdrop.remove();
+    };
+    
+    backdrop.onclick = () => {
+        menu.remove();
+        backdrop.remove();
+    };
+}
+
+/* ==================================================
+   10. دالة تسجيل الخروج من الإدارة
    ================================================== */
 function logoutAdmin() {
     sessionStorage.removeItem('isAdmin');
@@ -953,6 +1379,125 @@ window.addEventListener('load', () => {
     showPage('home-page');
     updateCartCount();
     createSnow();
+    updateUserIcon();
+
+    // Delegated handler for interactive images and data-action buttons
+    document.addEventListener('click', (ev) => {
+        const t = ev.target;
+
+        // 1) Handle elements (or ancestors) that declare a data-action
+        const actionEl = t.closest && t.closest('[data-action]');
+        if (actionEl) {
+            const action = actionEl.dataset.action;
+            const category = actionEl.dataset.category;
+            const target = actionEl.dataset.target;
+
+            switch (action) {
+                case 'navigate':
+                    ev.preventDefault();
+                    if (target) showPage(target);
+                    break;
+                case 'filter-home':
+                    ev.preventDefault();
+                    if (category) filterHomeMenu(category);
+                    break;
+                case 'filter':
+                    ev.preventDefault();
+                    if (category) filterItems(category);
+                    break;
+                case 'send-review':
+                    ev.preventDefault();
+                    sendReview();
+                    break;
+                case 'validate-login':
+                    ev.preventDefault();
+                    validateAdminLogin();
+                    break;
+                case 'finish-order':
+                    ev.preventDefault();
+                    finishOrder();
+                    break;
+                case 'logout':
+                    ev.preventDefault();
+                    logoutAdmin();
+                    break;
+                case 'add-new-item':
+                    ev.preventDefault();
+                    addNewItemFromAdmin();
+                    break;
+                case 'delete-item':
+                    ev.preventDefault();
+                    const delId = parseInt(actionEl.dataset.id, 10);
+                    if (!isNaN(delId)) deleteItem(delId);
+                    break;
+                case 'edit-item-full':
+                    ev.preventDefault();
+                    const fullEditId = parseInt(actionEl.dataset.id, 10);
+                    if (!isNaN(fullEditId)) editItemFull(fullEditId);
+                    break;
+                case 'edit-price':
+                    ev.preventDefault();
+                    const editId = parseInt(actionEl.dataset.id, 10);
+                    const currentPrice = parseFloat(actionEl.dataset.currentPrice);
+                    if (!isNaN(editId)) editItemPrice(editId, currentPrice);
+                    break;
+                case 'add-to-cart':
+                    ev.preventDefault();
+                    const id = parseInt(actionEl.dataset.id, 10);
+                    if (!isNaN(id)) addToCart(id);
+                    break;
+                case 'decrease-qty':
+                    ev.preventDefault();
+                    const decIndex = parseInt(actionEl.dataset.index, 10);
+                    if (!isNaN(decIndex)) decreaseQuantity(decIndex);
+                    break;
+                case 'increase-qty':
+                    ev.preventDefault();
+                    const incIndex = parseInt(actionEl.dataset.index, 10);
+                    if (!isNaN(incIndex)) increaseQuantity(incIndex);
+                    break;
+                case 'remove-item':
+                    ev.preventDefault();
+                    const remIndex = parseInt(actionEl.dataset.index, 10);
+                    if (!isNaN(remIndex)) removeFromCart(remIndex);
+                    break;
+                case 'update-phone':
+                    ev.preventDefault();
+                    updateRestaurantPhone();
+                    break;
+                case 'seed':
+                    ev.preventDefault();
+                    seedFromAdmin();
+                    break;
+                case 'clear-all':
+                    ev.preventDefault();
+                    clearAllItems();
+                    break;
+                default:
+                    break;
+            }
+
+            return; // handled
+        }
+
+        // 2) Fallback: images with interactive-img class open modal (uses data-fullsrc/data-caption)
+        if (t && t.classList && t.classList.contains('interactive-img')) {
+            const src = t.dataset.fullsrc || t.src || '';
+            const cap = t.dataset.caption || t.alt || '';
+            openImageModal(src, cap);
+        }
+    });
+    // Keyboard accessibility: trigger click on Enter/Space for elements with role=button or data-action
+    document.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        const active = document.activeElement;
+        if (!active) return;
+        const actionEl = active.closest && active.closest('[data-action]') || (active.hasAttribute && (active.getAttribute('role') === 'button') ? active : null);
+        if (actionEl) {
+            ev.preventDefault();
+            actionEl.click();
+        }
+    });
     // إذا كانت دوال Firebase متاحة، شغّل المزامنة للتأكد من تحميل البيانات الحقيقية
     if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.initializeFirebaseSync) {
         try {
@@ -977,8 +1522,38 @@ window.addEventListener('load', () => {
         }
     `;
     document.head.appendChild(style);
-});
 
+    // IntersectionObserver: trigger About page animations when elements enter viewport
+    (function setupAboutAnimations(){
+        const selector = '.about-hero-text, .about-hero-visual, .feature-box, .team-card, .about-metrics .metric';
+        const elements = Array.from(document.querySelectorAll(selector));
+        if (!elements.length) return;
+
+        // mark for animation
+        elements.forEach(el => el.classList.add('will-animate'));
+
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        // allow optional data-animate-delay in ms
+                        const delay = parseInt(el.dataset.animateDelay || '0', 10) || 0;
+                        if (delay) el.style.transitionDelay = `${delay}ms`;
+                        // add class to start transition
+                        requestAnimationFrame(() => el.classList.add('animate'));
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            elements.forEach(el => io.observe(el));
+        } else {
+            // fallback: just animate everything after small timeout
+            setTimeout(() => elements.forEach(el => el.classList.add('animate')), 150);
+        }
+    })();
+});
 // واجهة بسيطة لاستدعاء Google Sign-In من الواجهة العامة
 function googleSignIn() {
     if (window.firebaseDB && window.firebaseDB.googleSignIn) {
@@ -988,3 +1563,34 @@ function googleSignIn() {
     }
 }
 
+// Export to window for backward compatibility
+window.showPage = showPage;
+window.renderMenu = renderMenu;
+window.searchFunction = searchFunction;
+window.filterItems = filterItems;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.finishOrder = finishOrder;
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
+window.deleteItem = deleteItem;
+window.editItemPrice = editItemPrice;
+window.editItemFull = editItemFull;
+window.addNewItemFromAdmin = addNewItemFromAdmin;
+window.renderAdminList = renderAdminList;
+window.updateRestaurantPhone = updateRestaurantPhone;
+window.seedFromAdmin = seedFromAdmin;
+window.clearAllItems = clearAllItems;
+window.sendReview = sendReview;
+window.validateAdminLogin = validateAdminLogin;
+window.logoutAdmin = logoutAdmin;
+window.searchHomeMenu = searchHomeMenu;
+window.switchCustomerTab = switchCustomerTab;
+window.customerLogin = customerLogin;
+window.customerRegister = customerRegister;
+window.customerLogout = customerLogout;
+window.showCustomerMenu = showCustomerMenu;
+
+window.filterHomeMenu = filterHomeMenu;
+window.initializeHomeMenu = initializeHomeMenu;
+window.googleSignIn = googleSignIn;
